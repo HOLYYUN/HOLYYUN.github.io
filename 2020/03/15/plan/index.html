@@ -13,7 +13,7 @@
     <meta name="keywords" content="HolyYun">
 
 
-<title>安于做梦 | 在人间</title>
+<title>三月份计划的一些改变 | 在人间</title>
 
 
 
@@ -108,11 +108,73 @@
             <div class="container">
     
     
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
 
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">安于做梦</h1>
+            <h1 class="post-title">三月份计划的一些改变</h1>
             
                 <div class="post-meta">
                     
@@ -121,7 +183,7 @@
 
                     
                         <span class="post-time">
-                        时间: <a href="#">五月 5, 2019&nbsp;&nbsp;14:15:41</a>
+                        时间: <a href="#">三月 15, 2020&nbsp;&nbsp;21:26:46</a>
                         </span>
                     
                     
@@ -137,8 +199,11 @@
         </header>
 
         <div class="post-content">
-            <p>刚开始被越来越多的梦侵占睡眠的时候，并没有把这件事放在心上，只是感叹一下那些清晰记得的梦为什么都是些已经离开的人<br>到后来读大学，毕业工作，属于个人的时间和空间不断被压缩时，惶恐的发现可能做梦是自己发泄这些多余想象力的唯一异度时间了</p>
-<p>于是开始享受起做梦这件事，不仅是因为那种似是而非的真实感，也是为了那些可能不可能再见面的人<br>一叶扁舟摇摇晃晃终归是要驶向自己的终点。</p>
+            <h2 id="每天的上网时间控制在两小时"><a href="#每天的上网时间控制在两小时" class="headerlink" title="每天的上网时间控制在两小时"></a>每天的上网时间控制在两小时</h2><p>这并不是说每天玩手机的时间要低于两小时，其余时间不碰手机电脑。这显然是不现实的，尤其对于一个程序员来说，每天的搜索时间估计都要到两小时了。<br>最近留意了自己的作息时间，除了常规性失眠以外，微博 微信 B站占了大头，减少微博 B站使用频率。</p>
+<h2 id="找回写作输出习惯"><a href="#找回写作输出习惯" class="headerlink" title="找回写作输出习惯"></a>找回写作输出习惯</h2><p>重新整理了blog，换个主题，争取每周写点什么</p>
+<h2 id="工作上重新找回状态"><a href="#工作上重新找回状态" class="headerlink" title="工作上重新找回状态"></a>工作上重新找回状态</h2><p>炒股和娱乐占据了我2月和三月初的大部分精力，加上无人机项目 我并不是感兴趣，并且十分不想做下去。所以急需找回状态</p>
+<h2 id="保持阅读"><a href="#保持阅读" class="headerlink" title="保持阅读"></a>保持阅读</h2><p>今年并没有购书计划 当然不排除临时购买 不排购书计划 是想朝花夕拾 重温一下已阅的书籍</p>
+<h2 id="保持社会性并尝试摆脱集体生活"><a href="#保持社会性并尝试摆脱集体生活" class="headerlink" title="保持社会性并尝试摆脱集体生活"></a>保持社会性并尝试摆脱集体生活</h2><p>在这一点上需要顺其自然</p>
 
         </div>
 
@@ -162,10 +227,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2019/05/23/Docker常用命令记录/">Docker常用命令记录</a>
             
-            
-            <a class="next" rel="next" href="/2019/04/26/太阳落山了/">太阳落山了--张二棍</a>
+            <a class="next" rel="next" href="/2019/05/23/Docker常用命令记录/">Docker常用命令记录</a>
             
         </section>
 
