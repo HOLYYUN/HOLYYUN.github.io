@@ -224,9 +224,9 @@ docker  push  127.0.0.1/docker-imager/ubuntu:14.0
 </code></pre><h4 id="创建1个数据卷容器"><a href="#创建1个数据卷容器" class="headerlink" title="创建1个数据卷容器"></a>创建1个数据卷容器</h4><pre><code>docker run -it -v /dbdata --name dbdata myubuntu:14.04
 </code></pre><h4 id="挂载数据卷容器"><a href="#挂载数据卷容器" class="headerlink" title="挂载数据卷容器"></a>挂载数据卷容器</h4><pre><code>docker run -it --volumes-from dbdata --name db2 myubuntu:14.04
 </code></pre><h4 id="查询5星以上的spark镜像，星级越高，镜像越好"><a href="#查询5星以上的spark镜像，星级越高，镜像越好" class="headerlink" title="查询5星以上的spark镜像，星级越高，镜像越好"></a>查询5星以上的spark镜像，星级越高，镜像越好</h4><pre><code>docker search -s 5  spark
-</code></pre><h4 id="批量停止docker-容器-慎用！！"><a href="#批量停止docker-容器-慎用！！" class="headerlink" title="批量停止docker 容器,慎用！！"></a>批量停止docker 容器,慎用！！</h4><pre><code>docker stop $(docker ps -q)
-</code></pre><h4 id="批量删除docker-容器-慎用！！"><a href="#批量删除docker-容器-慎用！！" class="headerlink" title="批量删除docker 容器,慎用！！"></a>批量删除docker 容器,慎用！！</h4><pre><code>docker rm $(docker ps -qa)
-</code></pre><h4 id="批量删除docker镜像-慎用！！"><a href="#批量删除docker镜像-慎用！！" class="headerlink" title="批量删除docker镜像,慎用！！"></a>批量删除docker镜像,慎用！！</h4><pre><code>docker rmi $(docker images -qa)
+</code></pre><h4 id="批量停止docker-容器-慎用"><a href="#批量停止docker-容器-慎用" class="headerlink" title="批量停止docker 容器,慎用"></a>批量停止docker 容器,慎用</h4><pre><code>docker stop $(docker ps -q)
+</code></pre><h4 id="批量删除docker-容器-慎用"><a href="#批量删除docker-容器-慎用" class="headerlink" title="批量删除docker 容器,慎用"></a>批量删除docker 容器,慎用</h4><pre><code>docker rm $(docker ps -qa)
+</code></pre><h4 id="批量删除docker镜像-慎用"><a href="#批量删除docker镜像-慎用" class="headerlink" title="批量删除docker镜像,慎用"></a>批量删除docker镜像,慎用</h4><pre><code>docker rmi $(docker images -qa)
 </code></pre><h4 id="停止一个docker-容器"><a href="#停止一个docker-容器" class="headerlink" title="停止一个docker 容器"></a>停止一个docker 容器</h4><pre><code>docker stop dockerID
 </code></pre><h4 id="开始一个docker容器"><a href="#开始一个docker容器" class="headerlink" title="开始一个docker容器"></a>开始一个docker容器</h4><pre><code>docker start dockerID
 </code></pre><h5 id="拷贝本地数据到docker容器中"><a href="#拷贝本地数据到docker容器中" class="headerlink" title="拷贝本地数据到docker容器中"></a>拷贝本地数据到docker容器中</h5><pre><code>docker cp containerId:/path/xxx /host/path/target/xxx
