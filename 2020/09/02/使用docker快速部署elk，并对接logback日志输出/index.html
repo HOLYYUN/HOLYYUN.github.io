@@ -13,7 +13,7 @@
     <meta name="keywords" content="HolyYun">
 
 
-<title>使用Map在接口之间传输数据产生的问题 | 在人间</title>
+<title>使用docker快速部署elk，并对接logback日志输出 | 在人间</title>
 
 
 
@@ -174,7 +174,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">使用Map在接口之间传输数据产生的问题</h1>
+            <h1 class="post-title">使用docker快速部署elk，并对接logback日志输出</h1>
             
                 <div class="post-meta">
                     
@@ -183,7 +183,7 @@
 
                     
                         <span class="post-time">
-                        时间: <a href="#">三月 31, 2020&nbsp;&nbsp;15:31:39</a>
+                        时间: <a href="#">九月 2, 2020&nbsp;&nbsp;9:31:29</a>
                         </span>
                     
                     
@@ -199,27 +199,51 @@
         </header>
 
         <div class="post-content">
-            <h2 id="产生问题"><a href="#产生问题" class="headerlink" title="产生问题"></a>产生问题</h2><p>后端微服务之间互相调用接口时使用了这样的结构传输数据</p>
-<pre><code>public class ApiResult{
-    private Integer code;
-    private String desc;
-    private Object data;
+            <h4 id="ELK介绍-Elasticsearch-Logstash-Kibana"><a href="#ELK介绍-Elasticsearch-Logstash-Kibana" class="headerlink" title="ELK介绍: Elasticsearch , Logstash, Kibana"></a>ELK介绍: Elasticsearch , Logstash, Kibana</h4><pre><code>Elasticsearch:开源分布式搜索引擎，提供搜集、分析、存储数据三大功能。
+它的特点有：分布式，零配置，自动发现，索引自动分片，索引副本机制，restful风格接口，多数据源，自动搜索负载等。
+
+Logstash : 用来日志的搜集、分析、过滤日志的工具，支持大量的数据获取方式。
+一般部署方式为c/s模式，client收集，server消费消息。
+
+Kibana:提供可视化web页面
+</code></pre><h4 id="步骤-基于docker"><a href="#步骤-基于docker" class="headerlink" title="步骤(基于docker)"></a>步骤(基于docker)</h4><pre><code>docker pull sebp/elk:740  (740:集成镜像版本号)
+echo &quot;vm.max_map_count=262144&quot; &gt; /etc/sysctl.conf (配置虚拟内存最大值 es需要)
+sysctl –p
+docker run -dit --name elk  --net=host -p 5601:5601 -p 9200:9200  -p 5044:5044  -v /opt/elk-data:/var/lib/elasticsearch  -v /etc/localtime:/etc/localtime  sebp/elk:740 (映射了es数据存储目录，时间同步)
+</code></pre><h4 id="配置-本步骤进入容器内-docker-exec-–it-elk-bin-bash"><a href="#配置-本步骤进入容器内-docker-exec-–it-elk-bin-bash" class="headerlink" title="配置(本步骤进入容器内 docker exec –it elk /bin/bash)"></a>配置(本步骤进入容器内 docker exec –it elk /bin/bash)</h4><p>配置logstash</p>
+<pre><code>vim /etc/logstash/conf.d/02-beats-input.conf
+#数据输入配置：port -&gt; 端口号；codec -&gt; 输入格式。以logback为例。
+input {
+    tcp {
+        port =&gt; 5044
+        codec=&gt;json_lines
+    }
 }
-</code></pre><p>某个接口中在data里塞进去了一个Map&lt;Integer,String&gt;的数据实体</p>
-<pre><code>Map&lt;Integer, String&gt; noticeFailedMap = new HashMap&lt;&gt;();
-...
-result.setData(noticeFailedMap);
-</code></pre><p>但是在数据转化的时候就出了问题。</p>
-<pre><code>Map&lt;Integer,String&gt; noticeFailedMap = (Map&lt;Integer, String&gt;) getApiResult.getData();
-List&lt;String&gt; failIdList= new ArrayList&lt;&gt;(noticeFailedMap.keySet());
-if(failIdList.contains(employeeMealsDetail.getId())){...}
-</code></pre><p>一开始强制转化为Map&lt;Integer，String&gt;，但是在if判断的时候 抛出了</p>
-<pre><code>java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Integer
-</code></pre><h2 id="解决办法以及可能原因"><a href="#解决办法以及可能原因" class="headerlink" title="解决办法以及可能原因"></a>解决办法以及可能原因</h2><p>做了一些测试以及log之后，猜测具体问题出现在Map-&gt;Object-&gt;Map的过程中，于是把接收端的实体改成了</p>
-<pre><code>Map&lt;String,String&gt; noticeFailedMap = (Map&lt;String, String&gt;) getApiResult.getData();
-List&lt;String&gt; failIdList= new ArrayList&lt;&gt;(noticeFailedMap.keySet());
-if(failIdList.contains(employeeMealsDetail.getId().toString())){...}
-</code></pre><p>具体的问题原因没有去细究整个转换过程的类型变化。</p>
+#数据输出配置：hosts -&gt; 主机集合；index -&gt; 你将要创建的索引名称。这里es为例。
+output {
+    elasticsearch {
+        hosts =&gt; [&quot;127.0.0.1:9200&quot;]
+        index =&gt; &quot;%{[appName]} &quot;
+    }
+}
+</code></pre><p>配置kibana</p>
+<pre><code>vim /opt/kibana/config/kibana.yml
+文末添加 i18n.locale: &quot;zh-CN&quot;
+</code></pre><p>服务操作命令</p>
+<pre><code>service logstash start/restart/stop/status
+service elasticsearch start/restart/stop/status
+service kibana start/restart/stop/status
+</code></pre><p>spring-boot(logback配置)</p>
+<pre><code>&lt;appender name=&quot;stash&quot; class=&quot;net.logstash.logback.appender.LogstashTcpSocketAppender&quot;&gt;
+    &lt;destination&gt;xxx.xxx.xxx.xxx:xxx&lt;/destination&gt;
+    &lt;includeCallerData&gt;true&lt;/includeCallerData&gt;
+    &lt;encoder class=&quot;net.logstash.logback.encoder.LogstashEncoder&quot;&gt;
+        &lt;includeCallerData&gt;true&lt;/includeCallerData&gt;
+        &lt;!-- 根据应用名称创建索引--&gt;
+        &lt;customFields&gt;{&quot;appName&quot;:&quot;appName&quot;}&lt;/customFields&gt;
+    &lt;/encoder&gt;
+&lt;/appender&gt;
+</code></pre><p>要注意版本号匹配</p>
 
         </div>
 
@@ -243,10 +267,8 @@ if(failIdList.contains(employeeMealsDetail.getId().toString())){...}
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/09/02/使用docker快速部署elk，并对接logback日志输出/">使用docker快速部署elk，并对接logback日志输出</a>
             
-            
-            <a class="next" rel="next" href="/2020/03/17/疫情给我的一些思考/">疫情给我的一些思考</a>
+            <a class="next" rel="next" href="/2020/03/31/使用Map在接口之间传输数据产生的问题/">使用Map在接口之间传输数据产生的问题</a>
             
         </section>
 
